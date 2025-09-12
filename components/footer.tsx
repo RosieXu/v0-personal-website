@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail } from "lucide-react"
+import { Github, Linkedin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function Footer() {
@@ -12,14 +12,15 @@ export function Footer() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hover:bg-primary hover:text-primary-foreground">
-              <Github className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="hover:bg-primary hover:text-primary-foreground" asChild>
+              <a href="https://github.com/RosieXu" target="_blank" rel="noopener noreferrer">
+                <Github className="h-4 w-4" />
+              </a>
             </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-primary hover:text-primary-foreground">
-              <Linkedin className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-primary hover:text-primary-foreground">
-              <Mail className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="hover:bg-primary hover:text-primary-foreground" asChild>
+              <a href="https://www.linkedin.com/in/kaihan-xu-b19516250/" target="_blank" rel="noopener noreferrer">
+                <Linkedin className="h-4 w-4" />
+              </a>
             </Button>
           </div>
         </div>

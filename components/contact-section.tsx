@@ -116,15 +116,25 @@ export function ContactSection() {
                     variant="outline"
                     size="icon"
                     className="hover:bg-primary hover:text-primary-foreground bg-transparent"
+                    asChild
                   >
-                    <Github className="h-4 w-4" />
+                    <a href="https://github.com/RosieXu" target="_blank" rel="noopener noreferrer">
+                      <Github className="h-4 w-4" />
+                    </a>
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
                     className="hover:bg-primary hover:text-primary-foreground bg-transparent"
+                    asChild
                   >
-                    <Linkedin className="h-4 w-4" />
+                    <a
+                      href="https://www.linkedin.com/in/kaihan-xu-b19516250/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Linkedin className="h-4 w-4" />
+                    </a>
                   </Button>
                 </div>
               </CardContent>
