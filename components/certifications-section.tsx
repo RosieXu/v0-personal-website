@@ -16,22 +16,6 @@ export function CertificationsSection() {
       titleLink: "https://www.coursera.org/account/accomplishments/specialization/S2KXRO21TUZO",
     },
     {
-      title: "Certificate in Data Science",
-      issuer: "Department of Statistics, University of Illinois Urbana-Champaign",
-      hasAttachment: true,
-      attachmentName: "Rosie Xu - DSC.pdf",
-      link: "/Rosie Xu - DSC.pdf",
-      titleLink: "/Rosie Xu - DSC.pdf",
-    },
-    {
-      title: "Certificate of Completion - ATLAS Internship Program",
-      issuer: "University of Illinois Urbana-Champaign",
-      hasAttachment: true,
-      attachmentName: "Certificate_Xu_Rosie.pdf",
-      link: "/Certificate_Xu_Rosie.pdf",
-      titleLink: "/Certificate_Xu_Rosie.pdf",
-    },
-    {
       title: "Data Science DISCOVERY",
       issuer: "University of Illinois Urbana-Champaign",
       credentialId: "Fall 2023",
@@ -49,28 +33,48 @@ export function CertificationsSection() {
       titleLink: "https://d7.cs.illinois.edu/badges/stat100-sp23-NIUxqjVlekPd0c4gKczrt7tBNN9RNx/",
     },
     {
+      title: "Dean's List recognition",
+      issuer: "University of Illinois Urbana-Champaign",
+      credentialId: "Spring 2023",
+      hasCredential: false,
+      showButton: false,
+    },
+    {
+      title: "Certificate of Completion - ATLAS Internship Program",
+      issuer: "University of Illinois Urbana-Champaign",
+      hasAttachment: false,
+      showButton: false,
+    },
+    {
+      title: "Certificate in Data Science",
+      issuer: "Department of Statistics, University of Illinois Urbana-Champaign",
+      hasAttachment: false,
+      showButton: false,
+    },
+    {
       title: "Computer Vision",
       issuer: "Kaggle",
-      hasAttachment: true,
-      attachmentName: "Rosie Xu - Computer Vision.png",
-      link: "/Rosie Xu - Computer Vision.png",
-      titleLink: "/Rosie Xu - Computer Vision.png",
+      hasAttachment: false,
+      showButton: false,
     },
   ]
 
   return (
-    <section id="certifications" className="py-20 bg-muted/30">
+    <section id="certifications" className="py-20 bg-white/90 backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Licenses & Certifications</h2>
+          <h2 className="section-title text-3xl md:text-4xl font-bold mb-4">Honors & Certifications</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Professional certifications and continuous learning achievements that validate my expertise
+            Academic honors and professional certifications that validate my expertise
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certifications.map((cert, index) => (
-            <Card key={index} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card
+              key={index}
+              className="futuristic-card group bg-white/80 backdrop-blur-sm border-2 border-transparent"
+            >
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="p-2 bg-primary/10 rounded-lg">
@@ -83,14 +87,18 @@ export function CertificationsSection() {
                   )}
                 </div>
                 <CardTitle className="text-lg leading-tight">
-                  <a
-                    href={cert.titleLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group-hover:text-primary transition-colors hover:underline"
-                  >
-                    {cert.title}
-                  </a>
+                  {cert.showButton !== false ? (
+                    <a
+                      href={cert.titleLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group-hover:text-primary transition-colors hover:underline"
+                    >
+                      {cert.title}
+                    </a>
+                  ) : (
+                    <span>{cert.title}</span>
+                  )}
                 </CardTitle>
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-muted-foreground">{cert.issuer}</p>
@@ -105,21 +113,27 @@ export function CertificationsSection() {
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full group/btn hover:bg-primary hover:text-primary-foreground bg-transparent"
-                  onClick={() => window.open(cert.link, "_blank")}
-                >
-                  {cert.hasCredential ? "Show credential" : cert.hasAttachment ? "View attachment" : "View Certificate"}
-                  {cert.hasAttachment ? (
-                    <FileText className="ml-2 h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
-                  ) : (
-                    <ExternalLink className="ml-2 h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
-                  )}
-                </Button>
-              </CardContent>
+              {cert.showButton !== false && (
+                <CardContent>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="futuristic-button w-full group/btn hover:bg-primary hover:text-primary-foreground bg-transparent"
+                    onClick={() => window.open(cert.link, "_blank")}
+                  >
+                    {cert.hasCredential
+                      ? "Show credential"
+                      : cert.hasAttachment
+                        ? "View attachment"
+                        : "View Certificate"}
+                    {cert.hasAttachment ? (
+                      <FileText className="ml-2 h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
+                    ) : (
+                      <ExternalLink className="ml-2 h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
+                    )}
+                  </Button>
+                </CardContent>
+              )}
             </Card>
           ))}
         </div>

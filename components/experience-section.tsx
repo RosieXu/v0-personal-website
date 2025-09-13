@@ -69,10 +69,29 @@ export function ExperienceSection() {
   }
 
   return (
-    <section id="experience" className="py-20 bg-background">
-      <div className="container mx-auto px-4">
+    <section id="experience" className="py-20 relative overflow-hidden">
+      <div className="floating-tech top-16 left-20">
+        <div className="floating-hexagon" style={{ animationDelay: "1s" }}></div>
+      </div>
+      <div className="floating-tech top-40 right-32">
+        <div className="floating-dot" style={{ animationDelay: "2s" }}></div>
+      </div>
+      <div className="floating-tech bottom-32 left-16">
+        <div className="floating-line" style={{ animationDelay: "3s" }}></div>
+      </div>
+      <div className="floating-tech top-64 right-20">
+        <div className="floating-circuit" style={{ animationDelay: "4s" }}></div>
+      </div>
+      <div className="floating-tech bottom-16 right-48">
+        <div className="floating-grid" style={{ animationDelay: "5s" }}></div>
+      </div>
+      <div className="floating-tech top-80 left-40">
+        <div className="floating-dot" style={{ animationDelay: "6s" }}></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">My Experience</h2>
+          <h2 className="section-title text-3xl md:text-4xl font-bold mb-4 font-heading">My Experience</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-pretty">
             A journey through various roles and projects that have shaped my expertise in software development and
             machine learning
@@ -81,7 +100,10 @@ export function ExperienceSection() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {experiences.map((exp, index) => (
-            <Card key={index} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card
+              key={index}
+              className="futuristic-card group bg-white/80 backdrop-blur-sm border-2 border-transparent hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="p-2 bg-primary/10 rounded-lg flex items-center justify-center">

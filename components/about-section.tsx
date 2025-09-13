@@ -2,10 +2,26 @@ import { Card, CardContent } from "@/components/ui/card"
 
 export function AboutSection() {
   return (
-    <section id="about" className="py-20 bg-muted/30">
-      <div className="container mx-auto px-4">
+    <section id="about" className="py-20 relative overflow-hidden">
+      <div className="floating-tech top-10 left-16">
+        <div className="floating-dot" style={{ animationDelay: "0.5s" }}></div>
+      </div>
+      <div className="floating-tech top-32 right-24">
+        <div className="floating-circuit" style={{ animationDelay: "1.5s" }}></div>
+      </div>
+      <div className="floating-tech bottom-20 left-32">
+        <div className="floating-hexagon" style={{ animationDelay: "2.5s" }}></div>
+      </div>
+      <div className="floating-tech top-48 right-16">
+        <div className="floating-line" style={{ animationDelay: "3.5s" }}></div>
+      </div>
+      <div className="floating-tech bottom-40 right-40">
+        <div className="floating-grid" style={{ animationDelay: "4.5s" }}></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
+          <h2 className="section-title text-3xl md:text-4xl font-bold mb-4 font-heading">About Me</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-pretty">
             {
               "Passionate about applying AI techniques to real-world problems, and I'm always eager to learn new methods, collaborate on innovative projects, and push my technical skill set further."
@@ -15,7 +31,7 @@ export function AboutSection() {
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div className="space-y-6">
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="futuristic-card p-6 bg-white/80 backdrop-blur-sm border-2 border-transparent">
               <CardContent className="p-0">
                 <div className="flex items-start space-x-4">
                   <div className="p-3 bg-primary/10 rounded-lg">
@@ -43,7 +59,7 @@ export function AboutSection() {
           </div>
 
           <div className="space-y-6">
-            <Card className="p-6 hover:shadow-lg transition-shadow">
+            <Card className="futuristic-card p-6 bg-white/80 backdrop-blur-sm border-2 border-transparent">
               <CardContent className="p-0">
                 <div className="flex items-start space-x-4">
                   <div className="p-3 bg-primary/10 rounded-lg">

@@ -76,7 +76,9 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  /* Updated font configuration for futuristic theme */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-orbitron);
   --font-mono: var(--font-geist-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -121,6 +123,226 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* Updated to light green gradient background as requested */
+    @apply text-foreground min-h-screen;
+    background: linear-gradient(135deg, #e9fbe9 0%, #ffffff 100%);
+  }
+
+  /* Updated heading styles for cleaner look without heavy neon effects */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: #0f9d58;
+  }
+
+  /* Added slide-in animation for section titles */
+  .section-title {
+    animation: slideInFromLeft 0.8s ease-out;
+  }
+
+  @keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-100px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Updated typing animation to complete in 2 seconds total */
+  .typing-animation {
+    overflow: hidden;
+    border-right: 3px solid #0f9d58;
+    white-space: nowrap;
+    animation: typing 1.5s steps(40, end), blink-caret 0.75s step-end infinite;
+  }
+
+  .fade-in-delayed {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out 1.5s forwards;
+  }
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes blink-caret {
+    from,
+    to {
+      border-color: transparent;
+    }
+    50% {
+      border-color: #0f9d58;
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Added floating tech elements animations */
+  .floating-tech {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .floating-dot {
+    width: 4px;
+    height: 4px;
+    background: #34a853;
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(52, 168, 83, 0.5);
+  }
+
+  .floating-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #34a853, transparent);
+    animation: slide 8s linear infinite;
+  }
+
+  .floating-circuit {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #34a853;
+    border-radius: 2px;
+    animation: pulse 4s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(52, 168, 83, 0.3);
+  }
+
+  .floating-grid {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(90deg, transparent 48%, #34a853 50%, transparent 52%),
+      linear-gradient(0deg, transparent 48%, #34a853 50%, transparent 52%);
+    animation: rotate 10s linear infinite;
+    opacity: 0.6;
+  }
+
+  .floating-hexagon {
+    width: 16px;
+    height: 16px;
+    background: #34a853;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    animation: float 5s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(52, 168, 83, 0.4);
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes slide {
+    0% {
+      transform: translateX(-100px);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Enhanced button hover effects */
+  .futuristic-button {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .futuristic-button:hover {
+    @apply scale-105;
+    border: 2px solid #34a853;
+    box-shadow: 0 4px 15px rgba(52, 168, 83, 0.2);
+  }
+
+  /* Card hover animations */
+  .futuristic-card {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .futuristic-card:hover {
+    @apply scale-103;
+    border: 2px solid #34a853;
+    box-shadow: 0 8px 25px rgba(52, 168, 83, 0.15);
+  }
+
+  /* Updated glassmorphism navbar effect with better contrast */
+  .glassmorphism {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Updated nav link styling for better contrast */
+  .nav-link {
+    position: relative;
+    color: white;
+    transition: color 0.3s ease;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background: linear-gradient(135deg, #0f9d58, #34a853);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .nav-link:hover {
+    color: #34a853;
+    text-shadow: 0 0 10px rgba(52, 168, 83, 0.8);
   }
 }
