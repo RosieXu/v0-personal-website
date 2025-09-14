@@ -18,6 +18,7 @@ type Row = {
   message: string | null
   rating: number | null
   created_at: string
+  email: string | null
 }
 
 export function ContactSection() {
@@ -41,7 +42,7 @@ export function ContactSection() {
     const load = async () => {
       const { data, error } = await supabase
         .from("feedback")
-        .select("id, name, message, rating, created_at")
+        .select("id, name, email, message, rating, created_at")
         .order("created_at", { ascending: false })
 
       if (!error && data) setRows(data as Row[])
@@ -73,7 +74,7 @@ export function ContactSection() {
     setLoading(true)
     const { error } = await supabase
       .from("feedback")
-      .insert([{ name: formData.name, message: formData.message, rating }])
+      .insert([{ name: formData.name, email: formData.email, message: formData.message, rating }])
     setLoading(false)
 
     if (error) {
