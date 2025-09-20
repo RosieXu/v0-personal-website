@@ -1,10 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabaseClient'
+import { getSupabase } from '@/lib/supabaseClient'
 
 type Row = { id: string; name: string | null; message: string | null; rating: number | null; created_at: string }
 
 export default function Feedback() {
+  const supabase = getSupabase()
+  if (!supabase) return null 
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [rating, setRating] = useState(5)
