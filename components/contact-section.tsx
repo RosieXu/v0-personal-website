@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Mail, Send, Github, Linkedin } from "lucide-react"
+import { getSupabase } from "@/lib/supabaseClient"
 
 export function ContactSection() {
   // 表单数据
@@ -21,27 +22,44 @@ export function ContactSection() {
   const [rating, setRating] = useState<number>(5)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string>("")
 
-  // 表单提交：模拟提交而不使用数据库
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!formData.name.trim() || !formData.message.trim()) return
 
     setLoading(true)
+    setError("")
 
-    console.log("Contact form submitted:", { ...formData, rating })
+    try {
+      const supabase = getSupabase()
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Insert feedback into Supabase
+      const { error: insertError } = await supabase.from("feedback").insert([
+        {
+          name: formData.name.trim(),
+          email: formData.email.trim() || null,
+          message: formData.message.trim(),
+          rating: rating,
+        },
+      ])
 
-    setLoading(false)
+      if (insertError) {
+        throw insertError
+      }
 
-    // 重置表单
-    setFormData({ name: "", email: "", message: "" })
-    setRating(5)
-    setSuccess(true)
-    setTimeout(() => setSuccess(false), 3000)
+      // Success - reset form
+      setFormData({ name: "", email: "", message: "" })
+      setRating(5)
+      setSuccess(true)
+      setTimeout(() => setSuccess(false), 3000)
+    } catch (err) {
+      console.error("Error submitting feedback:", err)
+      setError("Failed to send message. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   // 表单输入联动
@@ -78,6 +96,10 @@ export function ContactSection() {
                 </div>
               )}
 
+              {error && (
+                <div className="mb-6 p-4 rounded-lg bg-red-100 border border-red-300 text-red-800">{error}</div>
+              )}
+
               {/* 表单 */}
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -98,7 +120,6 @@ export function ContactSection() {
                     placeholder="Your Email"
                     value={formData.email}
                     onChange={handleChange}
-                    required
                     className="w-full"
                   />
                 </div>
