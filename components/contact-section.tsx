@@ -18,7 +18,6 @@ type Row = {
   message: string | null
   rating: number | null
   created_at: string
-  email: string | null
 }
 
 export function ContactSection() {
@@ -37,12 +36,14 @@ export function ContactSection() {
   // 已有反馈列表
   const [rows, setRows] = useState<Row[]>([])
 
+  const supabase = getSupabase()
+
   // 初始加载 & 实时订阅
   useEffect(() => {
     const load = async () => {
       const { data, error } = await supabase
         .from("feedback")
-        .select("id, name, email, message, rating, created_at")
+        .select("id, name, message, rating, created_at")
         .order("created_at", { ascending: false })
 
       if (!error && data) setRows(data as Row[])
@@ -52,29 +53,26 @@ export function ContactSection() {
     // 实时：新插入的反馈自动追加到顶部
     const ch = supabase
       .channel("feedback-rt")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "feedback" },
-        (payload) => {
-          setRows((prev) => [payload.new as Row, ...prev])
-        }
-      )
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "feedback" }, (payload) => {
+        setRows((prev) => [payload.new as Row, ...prev])
+      })
       .subscribe()
 
     return () => {
       supabase.removeChannel(ch)
     }
-  }, [])
+  }, [supabase])
 
   // 表单提交：写入 name/message/rating 到 feedback 表
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     if (!formData.name.trim() || !formData.message.trim()) return
 
     setLoading(true)
     const { error } = await supabase
       .from("feedback")
-      .insert([{ name: formData.name, email: formData.email, message: formData.message, rating }])
+      .insert([{ name: formData.name, message: formData.message, rating }])
     setLoading(false)
 
     if (error) {
@@ -90,9 +88,7 @@ export function ContactSection() {
   }
 
   // 表单输入联动
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -103,9 +99,7 @@ export function ContactSection() {
     <section id="contact" className="py-20 bg-white/90 backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="section-title text-3xl md:text-4xl font-bold mb-4 font-heading">
-            Feedback
-          </h2>
+          <h2 className="section-title text-3xl md:text-4xl font-bold mb-4 font-heading">Feedback</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-pretty">
             I'd love to hear from you! Whether you have a project in mind or just want to connect
           </p>
@@ -172,39 +166,27 @@ export function ContactSection() {
                   />
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="futuristic-button w-full group"
-                >
+                <Button type="submit" disabled={loading} className="futuristic-button w-full group">
                   {loading ? "Sending…" : "Send Message"}
                   <Send className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
 
-                {success && (
-                  <p className="text-sm text-green-700">Thanks! Your feedback was submitted.</p>
-                )}
+                {success && <p className="text-sm text-green-700">Thanks! Your feedback was submitted.</p>}
               </form>
 
               {/* 反馈列表（显示在表单下方） */}
               <div className="mt-8 space-y-4">
-                {rows.length === 0 && (
-                  <p className="text-sm text-muted-foreground">No feedback yet.</p>
-                )}
+                {rows.length === 0 && <p className="text-sm text-muted-foreground">No feedback yet.</p>}
 
                 {rows.map((r) => (
                   <Card key={r.id} className="border bg-white/70 hover:shadow-md transition">
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="font-semibold">{r.name || "Anonymous"}</div>
-                        <div className="text-xs text-gray-500">
-                          {new Date(r.created_at).toLocaleString()}
-                        </div>
+                        <div className="text-xs text-gray-500">{new Date(r.created_at).toLocaleString()}</div>
                       </div>
                       <p className="mt-2 text-gray-800">{r.message}</p>
-                      {r.rating != null && (
-                        <div className="mt-2 text-sm">⭐ {r.rating}/5</div>
-                      )}
+                      {r.rating != null && <div className="mt-2 text-sm">⭐ {r.rating}/5</div>}
                     </CardContent>
                   </Card>
                 ))}
