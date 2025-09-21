@@ -36,7 +36,7 @@ export function AboutSection() {
                 <div className="flex items-start space-x-4">
                   <div className="p-3 bg-primary/10 rounded-lg">
                     <img
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/%E6%88%AA%E5%B1%8F2025-09-12%2015.15.42%281%29-BNvC7y5iEk1ISQbZH6qjpCZyGp1xiY.png"
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/%E6%88%AA%E5%B1%8F2025-09-12%2015.15.42%281%29%281%29-DscMyIzud8rhWB6r0aUJRyZIYRLOrL.png"
                       alt="UIUC Logo"
                       className="h-6 w-6"
                     />
