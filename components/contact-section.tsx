@@ -33,6 +33,12 @@ export function ContactSection() {
     setError("")
 
     try {
+      console.log("[v0] Environment check:", {
+        hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        urlStart: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20),
+      })
+
       const supabase = getSupabase()
 
       // Insert feedback into Supabase
@@ -46,6 +52,7 @@ export function ContactSection() {
       ])
 
       if (insertError) {
+        console.error("[v0] Supabase insert error:", insertError)
         throw insertError
       }
 
@@ -55,8 +62,12 @@ export function ContactSection() {
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
-      console.error("Error submitting feedback:", err)
-      setError("Failed to send message. Please try again.")
+      console.error("[v0] Error submitting feedback:", err)
+      console.error("[v0] Error details:", {
+        message: err instanceof Error ? err.message : "Unknown error",
+        stack: err instanceof Error ? err.stack : undefined,
+      })
+      setError(`Failed to send message: ${err instanceof Error ? err.message : "Unknown error"}`)
     } finally {
       setLoading(false)
     }
