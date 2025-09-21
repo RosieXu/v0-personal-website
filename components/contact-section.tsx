@@ -1,14 +1,22 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, Send, Github, Linkedin } from "lucide-react"
+import { Mail, Send, Github, Linkedin, Star } from "lucide-react"
 import { getSupabase } from "@/lib/supabaseClient"
+
+interface FeedbackItem {
+  id: string
+  name: string | null
+  message: string
+  rating: number | null
+  created_at: string
+}
 
 export function ContactSection() {
   // 表单数据
@@ -23,6 +31,100 @@ export function ContactSection() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string>("")
+
+  const [recentFeedback, setRecentFeedback] = useState<FeedbackItem[]>([])
+  const [feedbackLoading, setFeedbackLoading] = useState(true)
+  const [feedbackError, setFeedbackError] = useState<string>("")
+
+  const fetchRecentFeedback = async () => {
+    try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+      if (!supabaseUrl || !supabaseKey) {
+        setFeedbackError("Database configuration is missing")
+        setFeedbackLoading(false)
+        return
+      }
+
+      if (!supabaseUrl.startsWith("http://") && !supabaseUrl.startsWith("https://")) {
+        setFeedbackError("Database configuration is invalid")
+        setFeedbackLoading(false)
+        return
+      }
+
+      const supabase = getSupabase()
+      const { data, error } = await supabase
+        .from("feedback")
+        .select("id, name, message, rating, created_at")
+        .order("created_at", { ascending: false })
+        .limit(20)
+
+      if (error) {
+        console.error("[v0] Error fetching feedback:", error)
+        setFeedbackError("Failed to load recent feedback")
+        return
+      }
+
+      setRecentFeedback(data || [])
+      setFeedbackError("")
+    } catch (err) {
+      console.error("[v0] Error fetching feedback:", err)
+      setFeedbackError("Database service unavailable")
+    } finally {
+      setFeedbackLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchRecentFeedback()
+
+    // Only set up realtime subscription if environment variables are valid
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseKey || (!supabaseUrl.startsWith("http://") && !supabaseUrl.startsWith("https://"))) {
+      console.log("[v0] Skipping realtime subscription due to missing/invalid environment variables")
+      return
+    }
+
+    try {
+      const supabase = getSupabase()
+      const subscription = supabase
+        .channel("feedback_changes")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "feedback",
+          },
+          (payload) => {
+            console.log("[v0] New feedback received:", payload)
+            const newFeedback = payload.new as FeedbackItem
+            setRecentFeedback((prev) => [newFeedback, ...prev.slice(0, 19)])
+          },
+        )
+        .subscribe()
+
+      return () => {
+        subscription.unsubscribe()
+      }
+    } catch (err) {
+      console.error("[v0] Error setting up realtime subscription:", err)
+    }
+  }, [])
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,18 +155,26 @@ export function ContactSection() {
       const supabase = getSupabase()
 
       // Insert feedback into Supabase
-      const { error: insertError } = await supabase.from("feedback").insert([
-        {
-          name: formData.name.trim(),
-          email: formData.email.trim() || null,
-          message: formData.message.trim(),
-          rating: rating,
-        },
-      ])
+      const { data, error: insertError } = await supabase
+        .from("feedback")
+        .insert([
+          {
+            name: formData.name.trim(),
+            email: formData.email.trim() || null,
+            message: formData.message.trim(),
+            rating: rating,
+          },
+        ])
+        .select()
 
       if (insertError) {
         console.error("[v0] Supabase insert error:", insertError)
         throw insertError
+      }
+
+      if (data && data[0]) {
+        const newFeedback = data[0] as FeedbackItem
+        setRecentFeedback((prev) => [newFeedback, ...prev.slice(0, 19)])
       }
 
       // Success - reset form
@@ -247,6 +357,53 @@ export function ContactSection() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-16 max-w-6xl mx-auto">
+          <Card className="futuristic-card bg-white/80 backdrop-blur-sm border-2 border-transparent">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-primary">Recent Feedback</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {feedbackLoading ? (
+                <div className="text-center py-8 text-muted-foreground">Loading recent feedback...</div>
+              ) : feedbackError ? (
+                <div className="text-center py-8">
+                  <p className="text-red-600 mb-2">{feedbackError}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Please contact me directly at{" "}
+                    <a href="mailto:rosiexu7@outlook.com" className="text-primary hover:underline">
+                      rosiexu7@outlook.com
+                    </a>
+                  </p>
+                </div>
+              ) : recentFeedback.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">No feedback yet.</div>
+              ) : (
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {recentFeedback.map((feedback) => (
+                    <Card key={feedback.id} className="bg-white/60 border border-green-200 shadow-sm">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-primary">{feedback.name?.trim() || "Anonymous"}</h4>
+                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                            {feedback.rating && (
+                              <div className="flex items-center">
+                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                <span className="ml-1">{feedback.rating}</span>
+                              </div>
+                            )}
+                            <span>{formatDate(feedback.created_at)}</span>
+                          </div>
+                        </div>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{feedback.message}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
