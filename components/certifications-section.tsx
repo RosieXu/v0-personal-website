@@ -1,9 +1,8 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Award, ExternalLink, FileText } from "lucide-react"
+import { Award } from "lucide-react"
 
 export function CertificationsSection() {
   const certifications = [
@@ -11,51 +10,34 @@ export function CertificationsSection() {
       title: "Data Structures and Algorithms Specialization",
       issuer: "UC San Diego",
       credentialId: "S2KXRO21TUZO",
-      hasCredential: true,
-      link: "https://www.coursera.org/account/accomplishments/specialization/S2KXRO21TUZO",
-      titleLink: "https://www.coursera.org/account/accomplishments/specialization/S2KXRO21TUZO",
     },
     {
       title: "Data Science DISCOVERY",
       issuer: "University of Illinois Urbana-Champaign",
       credentialId: "Fall 2023",
       skills: ["Data Analytics", "Data Science"],
-      hasCredential: true,
-      link: "https://d7.cs.illinois.edu/badges/stat107-fa23-3PmVpukXfYWfX6udeJCt1GTSDWmCo5/",
-      titleLink: "https://d7.cs.illinois.edu/badges/stat107-fa23-3PmVpukXfYWfX6udeJCt1GTSDWmCo5/",
     },
     {
       title: "Statistics (STAT 100)",
       issuer: "University of Illinois Urbana-Champaign",
       credentialId: "Spring 2023",
-      hasCredential: true,
-      link: "https://d7.cs.illinois.edu/badges/stat100-sp23-NIUxqjVlekPd0c4gKczrt7tBNN9RNx/",
-      titleLink: "https://d7.cs.illinois.edu/badges/stat100-sp23-NIUxqjVlekPd0c4gKczrt7tBNN9RNx/",
     },
     {
       title: "Dean's List recognition",
       issuer: "University of Illinois Urbana-Champaign",
       credentialId: "Spring 2023",
-      hasCredential: false,
-      showButton: false,
     },
     {
       title: "Certificate of Completion - ATLAS Internship Program",
       issuer: "University of Illinois Urbana-Champaign",
-      hasAttachment: false,
-      showButton: false,
     },
     {
       title: "Certificate in Data Science",
       issuer: "Department of Statistics, University of Illinois Urbana-Champaign",
-      hasAttachment: false,
-      showButton: false,
     },
     {
       title: "Computer Vision",
       issuer: "Kaggle",
-      hasAttachment: false,
-      showButton: false,
     },
   ]
 
@@ -87,18 +69,7 @@ export function CertificationsSection() {
                   )}
                 </div>
                 <CardTitle className="text-lg leading-tight">
-                  {cert.showButton !== false ? (
-                    <a
-                      href={cert.titleLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group-hover:text-primary transition-colors hover:underline"
-                    >
-                      {cert.title}
-                    </a>
-                  ) : (
-                    <span>{cert.title}</span>
-                  )}
+                  <span>{cert.title}</span>
                 </CardTitle>
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-muted-foreground">{cert.issuer}</p>
@@ -113,27 +84,6 @@ export function CertificationsSection() {
                   )}
                 </div>
               </CardHeader>
-              {cert.showButton !== false && (
-                <CardContent>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="futuristic-button w-full group/btn hover:bg-primary hover:text-primary-foreground bg-transparent"
-                    onClick={() => window.open(cert.link, "_blank")}
-                  >
-                    {cert.hasCredential
-                      ? "Show credential"
-                      : cert.hasAttachment
-                        ? "View attachment"
-                        : "View Certificate"}
-                    {cert.hasAttachment ? (
-                      <FileText className="ml-2 h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
-                    ) : (
-                      <ExternalLink className="ml-2 h-3 w-3 group-hover/btn:translate-x-1 transition-transform" />
-                    )}
-                  </Button>
-                </CardContent>
-              )}
             </Card>
           ))}
         </div>

@@ -1,4 +1,3 @@
-import Feedback from "@/components/Feedback"
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { AboutSection } from "@/components/about-section"
@@ -17,11 +16,6 @@ export default function Home() {
         <AboutSection />
         <ExperienceSection />
         <SkillsSection />
-        <section id="feedback" className="mt-16">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Feedback</h2>
-          <Feedback />
-        </section>
-
         <CertificationsSection />
         <ContactSection />
       </main>
