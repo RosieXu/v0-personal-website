@@ -33,10 +33,21 @@ export function ContactSection() {
     setError("")
 
     try {
-      console.log("[v0] Environment check:", {
-        hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-        hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-        urlStart: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20),
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error("Database configuration is missing. Please contact the site administrator.")
+      }
+
+      if (!supabaseUrl.startsWith("http://") && !supabaseUrl.startsWith("https://")) {
+        throw new Error("Database URL is invalid. Please contact the site administrator.")
+      }
+
+      console.log("[v0] Environment check passed:", {
+        hasUrl: !!supabaseUrl,
+        hasKey: !!supabaseKey,
+        urlStart: supabaseUrl.substring(0, 20),
       })
 
       const supabase = getSupabase()
@@ -63,11 +74,20 @@ export function ContactSection() {
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
       console.error("[v0] Error submitting feedback:", err)
-      console.error("[v0] Error details:", {
-        message: err instanceof Error ? err.message : "Unknown error",
-        stack: err instanceof Error ? err.stack : undefined,
-      })
-      setError(`Failed to send message: ${err instanceof Error ? err.message : "Unknown error"}`)
+      let errorMessage = "Failed to send message"
+
+      if (err instanceof Error) {
+        if (err.message.includes("Database configuration is missing")) {
+          errorMessage =
+            "Service temporarily unavailable. Please try again later or contact me directly at rosiexu7@outlook.com"
+        } else if (err.message.includes("Database URL is invalid")) {
+          errorMessage = "Service configuration error. Please contact me directly at rosiexu7@outlook.com"
+        } else {
+          errorMessage = `Failed to send message: ${err.message}`
+        }
+      }
+
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
